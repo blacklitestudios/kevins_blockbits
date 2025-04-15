@@ -1,0 +1,10 @@
+{% extends 'registration/base.html' %}
+{% block content %}
+<h2>Dashboard</h2>
+<p>Your balance is {{ request.user.balance }}</p>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Register</button>
+</form>
+{% endblock %}
