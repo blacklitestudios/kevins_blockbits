@@ -1,24 +1,68 @@
+{% load static %}
+
+
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>My Site</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jelly Club - Digital Wallet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        'primary-dark': '#4B49C7',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
-  <div class="header">
-    <h1>My Site</h1>
-    <nav>
-        <a id="link_homepage" href="{% url 'home' %}">Home</a>
-        {% if user.is_authenticated %}
-          <a id="dashboard_homepage" href="{% url 'dashboard' %}">Dashboard</a>
-          <a id="logout_homepage" href="{% url 'logout' %}">Logout</a>
-        {% else %}
-          <a id="login_homepage" href="{% url 'login' %}">Login</a>
-          <a id="register_homepage" href="{% url 'register' %}">Register</a>
-        {% endif %}
-      </ul>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="bg-primary dark:bg-primary-dark shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                            <i class="fas fa-coins text-primary"></i>
+                        </div>
+                        <h1 class="text-xl font-bold text-white"><a href="{% url 'home' %}">Jelly Club</a></h1>
+                        <!--{% if user.is_authenticated %}
+                          <a id="dashboard_homepage" class="text-l text-white" href="{% url 'dashboard' %}">Dashboard</a>
+                        {% endif %}-->
+                    </div>
+                </div>
+                <div id="userNav" class="flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                    <span id="welcomeText" class="text-white text-sm">Welcome, {{ request.user.username }}</span>
+                    <a id="profileBtn" class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-white hover:bg-opacity-30 transition-colors" href="{% url 'dashboard' %}">
+                        <i class="fas fa-user text-sm"></i>
+                    </a>
+                    <a id="logoutBtn" class="text-white text-sm hover:text-gray-200 transition-colors" href="{% url 'logout' %}">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                    {% else %}
+                          <a id="login_homepage" class="text-l text-white" href="{% url 'login' %}">Login</a>
+                          <a id="register_homepage" class="bg-orange-500 text-white rounded-lg px-6 py-2 font-bold shadow hover:bg-orange-600 transition" href="{% url 'register' %}">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </nav>
-  <div class="content">
-    {% block content %}{% endblock %}
-  </div>
+
+    
+    <!-- Main Content -->
+    <div id="mainContent" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% block content %}{% endblock %}
+    </div>
+
+    
 </body>
 </html>

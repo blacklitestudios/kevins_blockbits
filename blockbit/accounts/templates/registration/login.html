@@ -1,9 +1,9 @@
 {% extends 'registration/base.html' %}
 {% block content %}
-<h2>Login</h2>
-<form method="post">
+<h2 class="text-3xl font-bold mb-6">Login</h2>
+<form method="post" class="space-y-4 max-w-md">
   {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Login</button>
+  {{form.as_p}}
+  <button type="submit" class="bg-orange-500 text-white rounded-lg px-6 py-2 font-bold shadow hover:bg-cyan-500 transition w-full">Login</button>
 </form>
 {% endblock %}

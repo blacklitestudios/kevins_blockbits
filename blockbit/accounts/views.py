@@ -1,11 +1,15 @@
 from django.shortcuts import render, redirect
+from django import forms
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm, UserCreationForm, TransferForm
+from .forms import RegisterForm, TransferForm, CustomLoginForm
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = RegisterForm(request.POST)
         if form.is_valid():
             print("EEE")
             user = form.save()
@@ -14,39 +18,55 @@ def register(request):
             login(request, user)
             return redirect('dashboard')
     else:
-        form = UserCreationForm()
+        form = RegisterForm()
     return render(request, 'registration/register.html', {'form': form})
 
 
-
 def user_login(request):
+    error = None
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+        form = CustomLoginForm(request, data=request.POST)
         
-        if user is not None:
+        if form.is_valid():
+            user = form.get_user()
             login(request, user)
             return redirect('dashboard')
         else:
-            # Add error message
-            return render(request, 'login.html', {'error': 'Invalid credentials'})
+            error = "Invalid credentials"
     else:
-        if request.user.is_authenticated:
-            return redirect('dashboard')
-    return render(request, 'login.html')
+        form = CustomLoginForm()
+    print(form, flush=True)
+    return render(request, 'registration/login.html', {'form': form, 'error': error})
+
 
 def home(request):
-    return render(request, 'registration/home.html')
+    if False:
+        return render(request, 'registration/home.html')
+    else:
+        return redirect('dashboard')
 
 @login_required
 def dashboard(request):
+    error = None
     if request.method == 'POST':
+
         form = TransferForm(request.POST, user=request.user)
+    
         if form.is_valid():
-            form.save()
-            return redirect('dashboard')
-    return render(request, 'registration/dashboard.html')
+            try:
+                form.save()
+            except forms.ValidationError as e:
+                error = str(e)
+                pass
+    else:
+        form = TransferForm(user=request.user)
+
+    if error:
+        return render(request, 'registration/dashboard.html', {'form': form, 'error': str(error)}) 
+    return render(request, 'registration/dashboard.html', {'form': form})
+
+def profile(request):
+    return redirect('dashboard')
 
 def custom_logout(request):
     logout(request)
