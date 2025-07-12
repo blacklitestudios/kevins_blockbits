@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-23=c0a_wb%s(%a6r$@%534f*eo_9sre3%vzv58oag8taq(mz%!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['blacklitestudios.github.io', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -122,6 +122,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = '/Users/kgvadmin/kevins_blockbits/blockbit/static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
