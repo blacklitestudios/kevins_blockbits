@@ -8,7 +8,7 @@ class CustomUser(AbstractUser):
         decimal_places=2,
         default=0.00
     )
-    
+
     # Add these to resolve the conflict
     groups = models.ManyToManyField(
         Group,
@@ -26,3 +26,8 @@ class CustomUser(AbstractUser):
         related_name="customuser_set",  # Changed from default 'user_set'
         related_query_name="user",
     )
+
+class Transaction(models.Model):
+    user = models.ForeignKey(CustomUser, related_name='recent_transactions', on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)

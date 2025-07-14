@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
-from .models import AbstractUser, CustomUser
+from .models import AbstractUser, CustomUser, Transaction
 
 
 
@@ -38,7 +38,7 @@ class CustomLoginForm(AuthenticationForm):
     
 class TransferForm(forms.Form):
     username = forms.CharField(max_length=150, required=True)
-    amount = forms.IntegerField(min_value=1, required=True)
+    amount = forms.IntegerField(required=True)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -57,10 +57,26 @@ class TransferForm(forms.Form):
         try:
             user = get_user_model().objects.get(username=self.cleaned_data['username'])
             amount = self.cleaned_data['amount']
-            if self.user.balance < amount:
+            if self.user.balance < amount and not self.user.is_superuser:
                 raise forms.ValidationError("Insufficient balance to complete the transfer.")
+            if not self.user.is_superuser and self.cleaned_data['amount'] < 1:
+                raise forms.ValidationError("Transfer value must be positive.")
+            if not self.user.is_superuser and self.cleaned_data['username'] == self.user.username:
+                raise forms.ValidationError("You can't send money to yourself.")
+
+
             user.balance += amount
             self.user.balance -= amount
+            Transaction.objects.create(
+                user=self.user,
+                amount=-amount
+            )
+            Transaction.objects.create(
+                user=user,
+                amount=amount
+            )
+            if self.user.is_superuser:
+                self.user.balance = 0.00
             if commit:
                 self.user.save()
                 user.save()

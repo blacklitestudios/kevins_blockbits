@@ -6,7 +6,7 @@
     <div class="flex justify-between items-center">
         <div>
             <p class="text-white text-opacity-80 text-sm">Available Balance</p>
-            <h2 id="balance" class="text-3xl font-bold">${{ request.user.balance }}</h2>
+            <h2 id="balance" class="text-3xl font-bold">${{ request.user.balance|floatformat:2 }}</h2>
         </div>
         <div class="text-right">
             <p class="text-white text-opacity-80 text-sm">Account ID</p>
@@ -29,4 +29,19 @@
   </div>
   <button type="submit" class="bg-orange-500 text-white rounded-lg px-6 py-2 font-bold shadow hover:bg-cyan-500 transition w-1/4">Complete Transaction</button>
 </form>
+<br>
+<!-- Recent Transactions -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold">Recent Transactions</h3>
+            </div>
+            <div id="transactionsList" class="divide-y divide-gray-200 dark:divide-gray-700">
+                {% for trans in request.user.recent_transactions.all %}
+                  <div class="flex justify-between items-center py-2 px-4 bg-gray-50 dark:bg-gray-900 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                    <span class="font-mono text-gray-700 dark:text-gray-200">{{ trans.user }}</span>
+                    <span class="font-semibold text-cyan-600 dark:text-{% if trans.amount > 0 %}green{% else %}red{% endif %}-400">{% if trans.amount > 0 %}+{% endif %}{{ trans.amount }}</span>
+                  </div>
+                {% endfor %}
+            </div>
+        </div>
 {% endblock %}
