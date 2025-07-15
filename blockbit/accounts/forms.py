@@ -68,13 +68,14 @@ class TransferForm(forms.Form):
             user.balance += amount
             self.user.balance -= amount
             Transaction.objects.create(
-                user=self.user,
-                amount=-amount
-            )
-            Transaction.objects.create(
-                user=user,
+                sender=self.user,
+                receiver=user,
                 amount=amount
             )
+            #Transaction.objects.create(
+                #user=user,
+                #amount=amount
+            #)
             if self.user.is_superuser:
                 self.user.balance = 0.00
             if commit:

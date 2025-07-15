@@ -3,6 +3,8 @@ from django import forms
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm, TransferForm, CustomLoginForm
+from accounts.models import Transaction
+import django.db.models as models
 
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -48,6 +50,9 @@ def home(request):
 @login_required
 def dashboard(request):
     error = None
+    transactions = Transaction.objects.filter(
+        models.Q(sender=request.user) | models.Q(receiver=request.user)
+    ).order_by('-timestamp')
     if request.method == 'POST':
 
         form = TransferForm(request.POST, user=request.user)
@@ -63,7 +68,7 @@ def dashboard(request):
 
     if error:
         return render(request, 'registration/dashboard.html', {'form': form, 'error': str(error)}) 
-    return render(request, 'registration/dashboard.html', {'form': form})
+    return render(request, 'registration/dashboard.html', {'form': form, 'transactions': transactions})
 
 def profile(request):
     return redirect('dashboard')

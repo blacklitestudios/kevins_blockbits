@@ -36,10 +36,24 @@
                 <h3 class="text-lg font-semibold">Recent Transactions</h3>
             </div>
             <div id="transactionsList" class="divide-y divide-gray-200 dark:divide-gray-700">
-                {% for trans in request.user.recent_transactions.all %}
+                {% for trans in transactions %}
                   <div class="flex justify-between items-center py-2 px-4 bg-gray-50 dark:bg-gray-900 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-                    <span class="font-mono text-gray-700 dark:text-gray-200">{{ trans.user }}</span>
-                    <span class="font-semibold text-cyan-600 dark:text-{% if trans.amount > 0 %}green{% else %}red{% endif %}-400">{% if trans.amount > 0 %}+{% endif %}{{ trans.amount }}</span>
+                    <span class="font-mono text-gray-700 dark:text-gray-200">
+                      {% if trans.sender == request.user %}
+                        {{ request.user.username }} -> {{ trans.receiver.username }}
+                      {% else %}
+                        {{ request.user.username }} <- {{ trans.sender.username }}
+                      {% endif %}
+                    </span>
+                    <span class="font-semibold dark:text-{% if trans.amount < 0 %}red{% elif trans.sender == request.user %}red{% else %}green{% endif %}-400">
+                      {% if trans.amount < 0 %}
+                        -{{ trans.amount }}
+                      {% elif trans.sender == request.user %}
+                        -{{ trans.amount }}
+                      {% else %}
+                        +{{ trans.amount }}
+                      {% endif %}
+                    </span>
                   </div>
                 {% endfor %}
             </div>

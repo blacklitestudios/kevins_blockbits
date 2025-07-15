@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-23=c0a_wb%s(%a6r$@%534f*eo_9sre3%vzv58oag8taq(mz%!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['blacklitestudios.github.io', 'localhost', '127.0.0.1', 'azurus2358.pythonanywhere.com']
 
