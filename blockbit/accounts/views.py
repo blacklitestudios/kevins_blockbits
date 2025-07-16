@@ -68,7 +68,7 @@ def dashboard(request):
 
     if error:
         return render(request, 'registration/dashboard.html', {'form': form, 'error': str(error)}) 
-    return render(request, 'registration/dashboard.html', {'form': form, 'transactions': transactions.reverse()})
+    return render(request, 'registration/dashboard.html', {'form': form, 'transactions': transactions})
 
 def profile(request):
     return redirect('dashboard')
