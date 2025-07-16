@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
 from .models import AbstractUser, CustomUser, Transaction
+from decimal import Decimal
 
 
 
@@ -56,7 +57,7 @@ class TransferForm(forms.Form):
         # Case-sensitive exact match
         try:
             user = get_user_model().objects.get(username=self.cleaned_data['username'])
-            amount = self.cleaned_data['amount']
+            amount = Decimal(self.cleaned_data['amount'])
             if self.user.balance < amount and not self.user.is_superuser:
                 raise forms.ValidationError("Insufficient balance to complete the transfer.")
             if not self.user.is_superuser and self.cleaned_data['amount'] < 1:
